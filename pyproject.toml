@@ -12,4 +12,5 @@ dependencies = [
     "pandas>=3.0.5",
     "psycopg2-binary>=2.9.13",
     "pydantic>=2.13.5",
+    "sqlglot>=30.18.0",
 ]

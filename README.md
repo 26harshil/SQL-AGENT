@@ -447,21 +447,25 @@ print("ETL Result:", response_etl)
 ```
 
 ### 2. Standalone Sub-Agent Execution
+- **Run Interactive Streamlit Web App**:
+  ```bash
+  uv run streamlit run app.py
+  ```
 - **Run SQL Analyst directly**:
   ```bash
-  python agents/sql_analyst.py
+  uv run python agents/sql_analyst.py
   ```
 - **Run ETL Analyst directly**:
   ```bash
-  python agents/etl_analyst.py
+  uv run python agents/etl_analyst.py
   ```
 
 ### 3. Exporting Graph Visualizations
 Generate and view updated Mermaid architecture diagrams:
 ```bash
-python agents/data_graph.py   # Generates agents/data_agent_graph.png
-python agents/etl_graph.py    # Generates agents/etl_analyst_graph.png
-python agents/sql_analyst.py  # Generates sql_agent_graph.png
+uv run python agents/data_graph.py   # Generates data_agent_graph.png
+uv run python agents/etl_graph.py    # Generates agents/etl_analyst_graph.png
+uv run python agents/sql_agent_graph.py  # Generates sql_agent_graph.png
 ```
 
 ---

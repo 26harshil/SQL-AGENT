@@ -305,11 +305,11 @@ def check_docker_status():
 
 def check_db_status():
     db_config = {
-        "host": os.environ.get("host", "localhost"),
-        "port": int(os.environ.get("port", 5432)),
-        "user": os.environ.get("user", "sql_agent_reader"),
-        "password": os.environ.get("password", "26102005harshil"),
-        "dbname": os.environ.get("database", "postgres"),
+        "host": os.environ.get("HOST"),
+        "port": int(os.environ.get("PORT")),
+        "user": os.environ.get("USER"),
+        "password": os.environ.get("PASSWORD"),
+        "dbname": os.environ.get("DATABASE"),
     }
     try:
         util = DatabaseUtil(db_config)
@@ -349,15 +349,15 @@ with st.sidebar:
     st.markdown(f"""
     <div class="metric-pill">
         <span class="metric-label">DB Host</span>
-        <span class="metric-value">{os.environ.get('host', 'localhost')}:{os.environ.get('port', '5432')}</span>
+        <span class="metric-value">{os.environ.get('HOST')}:{os.environ.get('PORT','5432')}</span>
     </div>
     <div class="metric-pill">
         <span class="metric-label">Access Role</span>
-        <span class="metric-value">{os.environ.get('user', 'sql_agent_reader')}</span>
+        <span class="metric-value">{os.environ.get('USER')}</span>
     </div>
     <div class="metric-pill">
         <span class="metric-label">Database</span>
-        <span class="metric-value">{os.environ.get('database', 'postgres')}</span>
+        <span class="metric-value">{os.environ.get('DATABASE')}</span>
     </div>
     """, unsafe_allow_html=True)
 

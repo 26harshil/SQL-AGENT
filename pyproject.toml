@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "dotenv>=0.9.9",
+    "python-dotenv>=1.0.1",
     "langchain>=1.4.0",
     "langchain-google-genai>=4.4.0",
     "langchain-groq>=1.1.3",

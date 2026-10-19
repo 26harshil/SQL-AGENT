@@ -5,19 +5,19 @@ from psycopg2 import sql
 from dotenv import load_dotenv
 load_dotenv()
 
-if 'port' not in os.environ:
-    os.environ['port'] = '5432'
+if 'PORT' not in os.environ:
+    os.environ['PORT'] = '5432'
 
 # ============================================================
 # CONFIGURATION
 # ============================================================
 
 DB_CONFIG = {
-    "host": os.environ['host'],
-    "port": int(os.environ['port']),
-    "database": os.environ['database'],
-    "user": os.environ['user'],
-    "password": os.environ['password'],
+    "host": os.environ.get("HOST"),
+    "port": int(os.environ.get("PORT")),
+    "user": os.environ.get("USER"),
+    "password": os.environ.get("PASSWORD"),
+    "dbname": os.environ.get("DATABASE"),
 }
 
 CSV_DIR = "data"

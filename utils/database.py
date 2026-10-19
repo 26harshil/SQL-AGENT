@@ -1,3 +1,4 @@
+import os
 import psycopg2
 from typing import Dict, Any, Optional, List
 
@@ -130,11 +131,11 @@ class DatabaseUtil:
 
 if __name__ == "__main__":
     db_config = {
-        "host": "localhost",
-        "port": 5432,
-        "user": "sql_agent_reader",
-        "password": "26102005harshil",
-        "dbname": "postgres"
+        "host": os.environ.get("HOST"),
+        "port": int(os.environ.get("PORT")),
+        "user": os.environ.get("USER"),
+        "password": os.environ.get("PASSWORD"),
+        "dbname": os.environ.get("DATABASE"),
     }
 
     try:

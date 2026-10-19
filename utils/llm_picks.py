@@ -1,98 +1,82 @@
-# import os
-# from dotenv import load_dotenv
-# from langchain_openai import ChatOpenAI
-
-# load_dotenv()
-
-# # Map OPENAI_API or OPENROUTER_APIKEY to OPENAI_API_KEY if not already set
-# if not os.getenv("OPENAI_API_KEY") and os.getenv("OPENAI_API"):
-#     os.environ["OPENAI_API_KEY"] = os.environ["OPENAI_API"]
-
-
-# def pick_llm(level: str):
-#     """
-#     Picks the appropriate LLM based on the level of the question.
-
-#     Args:
-#         level (str): The level of the question, can be "low", "medium", or "high".
-
-#     Returns:
-#         ChatOpenAI: The LLM instance to be used.
-#     """
-#     level_lower = level.lower().strip()
-#     if level_lower == "low":
-#         llm = ChatOpenAI(
-#             model_name="gpt-5.6-luna",
-#             temperature=0,
-#             reasoning_effort="none",
-#         )
-#     elif level_lower == "medium":
-#         llm = ChatOpenAI(
-#             model_name="gpt-5.6-terra",
-#             temperature=0,
-#             reasoning_effort="none",
-#         )
-#     elif level_lower == "high":
-#         llm = ChatOpenAI(
-#             model_name="gpt-5.6-sol",
-#             temperature=0,
-#             reasoning_effort="none",
-#         )
-#     else:
-#         raise ValueError(f"Unsupported level: {level}")
-
-#     return llm
-
-
-# if __name__ == "__main__":
-#     llm_obj = pick_llm("low")
-#     print(llm_obj.invoke("What is the capital of India?"))
-
-
-
 import os
-
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
 
 load_dotenv()
 
 
 def pick_llm(level: str):
-    level_lower = level.lower().strip()
+    """
+    Picks the appropriate LLM based on task difficulty level.
+    Uses Google Gemini (default: gemini-3.7-flash) as the primary, verified provider.
+    Provides fallback to alternative providers (Groq, OpenRouter) if explicitly configured.
 
+    Args:
+        level (str): Task complexity tier: 'low', 'medium', or 'high'.
+
+    Returns:
+        BaseChatModel: An initialized LangChain chat model.
+    """
+    level_lower = level.lower().strip()
+    google_key = os.getenv("GOOGLE_API_KEY")
+    gemini_model = os.getenv("GEMINI_MODEL", "gemini-3.7-flash")
+
+    if not google_key:
+        openrouter_key = os.getenv("OPENROUTER_API_KEY")
+        groq_key = os.getenv("GROQ_API_KEY")
+
+        if openrouter_key:
+            return ChatOpenAI(
+                model=os.getenv("LLM_MODEL", "nvidia/nemotron-3-ultra-550b-a55b:free"),
+                temperature=0,
+                api_key=openrouter_key,
+                base_url=os.getenv("LLM_BASE_URL", "https://openrouter.ai/api/v1"),
+            )
+        elif groq_key:
+            return ChatGroq(
+                model_name=os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"),
+                temperature=0,
+                groq_api_key=groq_key,
+            )
+        else:
+            raise ValueError(
+                "No valid LLM API key found. Please set GOOGLE_API_KEY in your .env file."
+            )
+
+    # Google Gemini is available and verified
     if level_lower == "low":
-        # Groq: fast inference
-        llm =ChatOpenAI(
-            model="nvidia/nemotron-3-ultra-550b-a55b:free",
+        # Fast query curation, classification, synthesis
+        return ChatGoogleGenerativeAI(
+            model=gemini_model,
             temperature=0,
-            api_key=os.getenv("OPENROUTER_API_KEY"),
-            base_url="https://openrouter.ai/api/v1",
+            google_api_key=google_key,
         )
 
     elif level_lower == "medium":
-        # Google Gemini: general-purpose reasoning
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-3.6-flash",
+        # SQL generation, AST safety judge with structured output
+        return ChatGoogleGenerativeAI(
+            model=gemini_model,
             temperature=0,
-            google_api_key=os.getenv("GOOGLE_API_KEY"),
+            google_api_key=google_key,
         )
 
     elif level_lower == "high":
-        # OpenRouter: free model
-        llm = ChatOpenAI(
-            model="nvidia/nemotron-3-ultra-550b-a55b:free",
+        # Complex multi-step reasoning
+        return ChatGoogleGenerativeAI(
+            model=gemini_model,
             temperature=0,
-            api_key=os.getenv("OPENROUTER_API_KEY"),
-            base_url="https://openrouter.ai/api/v1",
+            google_api_key=google_key,
         )
 
     else:
         raise ValueError(
-            f"Invalid level: {level}. "
-            "Choose low, medium, or high."
+            f"Invalid level: '{level}'. Choose 'low', 'medium', or 'high'."
         )
 
-    return llm
+
+if __name__ == "__main__":
+    test_llm = pick_llm("low")
+    res = test_llm.invoke("Say hello in one word.")
+    print("Test LLM output:", res.content)

@@ -1,5 +1,8 @@
 import os
 import sys
+from dotenv import load_dotenv
+
+load_dotenv()
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -68,11 +71,11 @@ def prompt_query_context(state: AgentSchema) -> dict:
     curated_question = state.curated_ques
 
     conn_details = {
-        "host": os.environ.get("host", "localhost"),
-        "port": int(os.environ.get("port", 5432)),
-        "user": os.environ.get("user", "sql_agent_reader"),
-        "password": os.environ.get("password", "26102005harshil"),
-        "dbname": os.environ.get("database", "postgres"),
+       "host": os.environ.get("HOST"),
+        "port": int(os.environ.get("PORT")),
+        "user": os.environ.get("USER"),
+        "password": os.environ.get("PASSWORD"),
+        "dbname": os.environ.get("DATABASE"),
     }
 
     obj = DatabaseUtil(conn_details)
@@ -188,11 +191,11 @@ def execute_sql(state: AgentSchema) -> dict:
         raise RuntimeError("Execution blocked: SQL query is empty.")
 
     conn_details = {
-        "host": os.environ.get("host", "localhost"),
-        "port": int(os.environ.get("port", 5432)),
-        "user": os.environ.get("user", "sql_agent_reader"),
-        "password": os.environ.get("password", "26102005harshil"),
-        "dbname": os.environ.get("database", "postgres"),
+        "host": os.environ.get("HOST"),
+        "port": int(os.environ.get("PORT")),
+        "user": os.environ.get("USER"),
+        "password": os.environ.get("PASSWORD"),
+        "dbname": os.environ.get("DATABASE"),
     }
 
     obj = DatabaseUtil(conn_details)
